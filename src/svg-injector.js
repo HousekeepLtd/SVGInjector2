@@ -1094,62 +1094,20 @@
     return SVGInjector;
   })();
 
-  if (typeof angular === 'object') {
-    // use with angular
-    angular
-      .module('svginjector', [])
-      .provider('svgInjectorOptions', function() {
-        var injectorOpts = {};
-        return {
-          set: function (opts) {
-            injectorOpts = opts;
-          },
-          $get: function () {
-            return injectorOpts;
-          }
-        };
-      })
-      .factory('svgInjectorFactory', ['svgInjectorOptions', function (svgInjectorOptions) {
-        return new SVGInjector(svgInjectorOptions);
-      }])
-      .directive('svg', ['svgInjectorFactory', function(svgInjectorFactory) {
-        var cfg = svgInjectorFactory.getConfig();
-        return {
-          restrict: 'E',
-          link: function (scope, element, attrs) {
-            // var attrToObserve;
-            if (attrs['class'] && attrs['class'].indexOf(cfg.spriteClassIdName) >= 0) {
-              attrs.$observe('class', function() {
-                svgInjectorFactory.inject(element[0]);
-              });
-            } else if (attrs.dataSrc || attrs.src) {
-              // attrToObserve = (attrs.dataSrc) ? 'dataSrc' : 'src';
-              // attrs.$observe(attrToObserve, function() {
-              svgInjectorFactory.inject(element[0]);
-              // });
-            }
 
-          }
-        };
-      }])
-    ;
+  // use standalone -> UMD
+  // Node.js or CommonJS
+  if (typeof module === 'object' && typeof module.exports === 'object') {
+    module.exports = SVGInjector;
   }
-  else{
-    // use standalone -> UMD
-
-    // Node.js or CommonJS
-    if (typeof module === 'object' && typeof module.exports === 'object') {
-      module.exports = SVGInjector;
-    }
-    // AMD support
-    else if (typeof define === 'function' && define.amd) {
-      define(function () {
-        return SVGInjector;
-      });
-    }
-    // Otherwise, attach to window as global
-    else if (typeof window === 'object') {
-      window.SVGInjector = SVGInjector;
-    }
+  // AMD support
+  else if (typeof define === 'function' && define.amd) {
+    define(function () {
+      return SVGInjector;
+    });
+  }
+  // Otherwise, attach to window as global
+  else if (typeof window === 'object') {
+    window.SVGInjector = SVGInjector;
   }
 }(window, document));
