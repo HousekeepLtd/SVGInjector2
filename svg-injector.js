@@ -1,5 +1,5 @@
 /*!
- * SVGInjector v2.1.3 - Fast, caching, dynamic inline SVG DOM injection library
+ * SVGInjector v${VERSION} - Fast, caching, dynamic inline SVG DOM injection library
  * https://github.com/flobacher/SVGInjector2
  * forked from:
  * https://github.com/iconic/SVGInjector
@@ -632,43 +632,13 @@
         };
         return SVGInjector;
     }();
-    if (typeof angular === "object") {
-        angular.module("svginjector", []).provider("svgInjectorOptions", function() {
-            var injectorOpts = {};
-            return {
-                set: function(opts) {
-                    injectorOpts = opts;
-                },
-                $get: function() {
-                    return injectorOpts;
-                }
-            };
-        }).factory("svgInjectorFactory", [ "svgInjectorOptions", function(svgInjectorOptions) {
-            return new SVGInjector(svgInjectorOptions);
-        } ]).directive("svg", [ "svgInjectorFactory", function(svgInjectorFactory) {
-            var cfg = svgInjectorFactory.getConfig();
-            return {
-                restrict: "E",
-                link: function(scope, element, attrs) {
-                    if (attrs["class"] && attrs["class"].indexOf(cfg.spriteClassIdName) >= 0) {
-                        attrs.$observe("class", function() {
-                            svgInjectorFactory.inject(element[0]);
-                        });
-                    } else if (attrs.dataSrc || attrs.src) {
-                        svgInjectorFactory.inject(element[0]);
-                    }
-                }
-            };
-        } ]);
-    } else {
-        if (typeof module === "object" && typeof module.exports === "object") {
-            module.exports = SVGInjector;
-        } else if (typeof define === "function" && define.amd) {
-            define(function() {
-                return SVGInjector;
-            });
-        } else if (typeof window === "object") {
-            window.SVGInjector = SVGInjector;
-        }
+    if (typeof module === "object" && typeof module.exports === "object") {
+        module.exports = SVGInjector;
+    } else if (typeof define === "function" && define.amd) {
+        define(function() {
+            return SVGInjector;
+        });
+    } else if (typeof window === "object") {
+        window.SVGInjector = SVGInjector;
     }
 })(window, document);
